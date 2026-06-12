@@ -1,0 +1,300 @@
+
+
+
+.citizen-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-page);
+}
+
+.citizen-phone {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.citizen-header {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 18px;
+  background: var(--danger-solid);
+}
+
+.citizen-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.citizen-logo-mark {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--danger-solid);
+}
+
+.citizen-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.citizen-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.citizen-admin-link {
+  margin-left: auto;
+  font-size: 12px;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.citizen-admin-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.citizen-body {
+  padding: 18px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+
+.citizen-body > .field-label:first-child {
+  margin-top: 0;
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: 6px 0 0;
+}
+
+.location-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+}
+
+.location-box.located {
+  background: var(--info-bg);
+  border-color: var(--info-solid);
+}
+
+.location-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--info-text);
+  flex-shrink: 0;
+}
+
+.location-box.located .location-pin {
+  background: var(--success-solid);
+  color: #fff;
+}
+
+.location-coords {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--info-text);
+}
+
+.location-accuracy {
+  margin: 0;
+  font-size: 11px;
+  color: var(--info-text);
+  opacity: 0.8;
+}
+
+.citizen-footnote {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.6;
+  margin: 14px 0 0;
+}
+
+/* ===== Cambios nuevos: contador, upload, preview, modal ===== */
+
+.char-counter {
+  margin: 5px 0 0;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+.upload-box {
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.upload-box:hover {
+  border-color: var(--info-solid);
+  background: var(--info-bg);
+}
+
+.upload-icon {
+  font-size: 26px;
+}
+
+.upload-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.image-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.image-preview img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-preview-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 11px;
+  background: var(--bg-muted);
+}
+
+.image-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-remove {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--danger-text);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.image-remove:hover {
+  background: var(--danger-bg);
+}
+
+/* Modal central de exito */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-pop);
+  animation: pop-in 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--success-solid);
+  color: #fff;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+
+.modal-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.modal-text {
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modal-alert {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--danger-text);
+  background: var(--danger-bg);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  line-height: 1.5;
+}
