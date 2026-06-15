@@ -387,3 +387,45 @@
   background: var(--success-bg);
   color: var(--success-text);
 }
+
+
+/* ===== Botones de filtro ===== */
+.filtro-botones {
+  display: flex;
+  gap: 6px;
+}
+
+.filtro-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filtro-btn:hover {
+  background: var(--bg-muted);
+}
+
+.filtro-btn.activo {
+  background: var(--info-solid);
+  color: #fff;
+  border-color: var(--info-solid);
+}
+
+.boton3 {
+  background: #f1d1d1;
+  color: #6b1f1f;
+}
+
+.boton2 {
+  background: #f4ebc6;
+  color: #867b00;
+}
+
+.boton4 {
+  background: #d3f9d2;
+  color: #0b4f00;
+}

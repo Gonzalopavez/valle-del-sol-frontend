@@ -298,3 +298,37 @@
   border-radius: var(--radius-md);
   line-height: 1.5;
 }
+/* ===== Pestañas del vecino (Reportar / Ver mapa) ===== */
+.citizen-tabs {
+  display: flex;
+  gap: 10px;
+  padding: 10px 18px 15px;
+  
+  
+}
+
+.citizen-tab {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px;
+  border-radius: 20px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  transition: background 0.15s, color 0.15s;
+  
+}
+
+.citizen-tab.activo {
+  background: var(--danger-solid);
+  color: #fff;
+}
+
+.citizen-map-box {
+  height: 420px;
+  margin: 0;
+}
+
+.citizen-map-box .leaflet-container {
+  border-radius: 0;
+}

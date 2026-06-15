@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { createIncident, sendUserLocation } from "../services/api";
+import { createIncident, sendUserLocation, getAllIncidents } from "../services/api";
 import { getCurrentPosition, type Coordinates } from "../services/geolocation";
 import { procesarImagen, esImagenValida } from "../services/image";
 import { useToasts } from "../components/useToasts";
+import CitizenMap from "../components/CitizenMap";
+import type { Incident } from "../types";
 import "./CitizenView.css";
 
 const VECINO_ID = "vecino_" + Math.floor(1000 + Math.random() * 9000);
@@ -20,6 +22,8 @@ export default function CitizenView() {
   const [locating, setLocating] = useState(false);
   const [sending, setSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // modal central de exito
+  const [tab, setTab] = useState<"reportar" | "mapa">("reportar");
+  const [incidents, setIncidents] = useState<Incident[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,6 +31,18 @@ export default function CitizenView() {
     capturarUbicacion(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Cuando el vecino entra a la pestana mapa, cargamos los incidentes y refrescamos cada 8s.
+  useEffect(() => {
+    if (tab !== "mapa") return;
+    let activo = true;
+    const cargar = () => {
+      getAllIncidents().then((data) => { if (activo) setIncidents(data); }).catch(() => {});
+    };
+    cargar();
+    const intervalo = setInterval(cargar, 8000);
+    return () => { activo = false; clearInterval(intervalo); };
+  }, [tab]);
 
   async function capturarUbicacion(silencioso = false) {
     setLocating(true);
@@ -135,6 +151,12 @@ export default function CitizenView() {
           </Link>
         </header>
 
+        <div className="citizen-tabs">
+          <button className={`citizen-tab ${tab === "reportar" ? "activo" : ""}`} onClick={() => setTab("reportar")}>Reportar</button>
+          <button className={`citizen-tab ${tab === "mapa" ? "activo" : ""}`} onClick={() => setTab("mapa")}>Ver mapa</button>
+        </div>
+
+        {tab === "reportar" && (
         <div className="citizen-body">
           <label className="field-label">Descripcion del fuego</label>
           <textarea
@@ -216,6 +238,13 @@ export default function CitizenView() {
             antes de activar alertas.
           </p>
         </div>
+        )}
+
+        {tab === "mapa" && (
+          <div className="citizen-map-box">
+            <CitizenMap incidents={incidents} />
+          </div>
+        )}
       </div>
     </div>
   );

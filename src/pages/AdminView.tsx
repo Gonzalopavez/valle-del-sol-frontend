@@ -15,8 +15,12 @@ export default function AdminView() {
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [zoomImage, setZoomImage] = useState<string | null>(null); // visor de imagen grande
+  const [filtro, setFiltro] = useState<"ALL" | "PENDING" | "VALIDATED" | "MITIGATED">("ALL");
 
   const selected = incidents.find((i) => i.id === selectedId) || null;
+  // Lista ya filtrada segun el boton activo. Si es "ALL", muestra todos.
+  const incidentesFiltrados =
+    filtro === "ALL" ? incidents : incidents.filter((i) => i.status === filtro);
 
   const cargarIncidentes = useCallback(async () => {
     try {
@@ -146,7 +150,7 @@ export default function AdminView() {
         <section className="admin-map-col">
           <div className="admin-map card">
             <MapView
-              incidents={incidents}
+              incidents={incidentesFiltrados}
               selectedId={selectedId}
               draftCoords={draftCoords}
               onSelect={seleccionar}
@@ -246,6 +250,32 @@ export default function AdminView() {
       <section className="card admin-list">
         <div className="list-head">
           <p className="list-title">Reportes entrantes</p>
+          <div className="filtro-botones">
+            <button
+              className={`filtro-btn ${filtro === "ALL" ? "activo" : ""}`}
+              onClick={() => setFiltro("ALL")}
+            >
+              Todos
+            </button>
+            <button
+              className={`filtro-btn boton2 ${filtro === "PENDING" ? "activo" : ""}`}
+              onClick={() => setFiltro("PENDING")}
+            >
+              PENDIENTES
+            </button>
+            <button
+              className={`filtro-btn boton3 ${filtro === "VALIDATED" ? "activo" : ""}`}
+              onClick={() => setFiltro("VALIDATED")}
+            >
+              VALIDADOS
+            </button>
+            <button
+              className={`filtro-btn boton4 ${filtro === "MITIGATED" ? "activo" : ""}`}
+              onClick={() => setFiltro("MITIGATED")}
+            >
+              MITIGADOS
+            </button>
+          </div>
           <span className="list-refresh">actualiza cada 8 s</span>
         </div>
         {loading ? (
@@ -253,7 +283,7 @@ export default function AdminView() {
         ) : incidents.length === 0 ? (
           <p className="list-empty">No hay reportes todavia.</p>
         ) : (
-          incidents.map((inc) => (
+          incidentesFiltrados.map((inc) => (
             <div
               key={inc.id}
               className={`list-row ${inc.id === selectedId ? "active" : ""}`}
