@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Incident } from "../types";
 
 function makeIcon(color: string) {
@@ -17,6 +17,14 @@ const ICON_VALIDATED = makeIcon("#e24b4a");
 const ICON_MITIGATED = makeIcon("#639922");
 const ICON_SELECTED = makeIcon("#185fa5");
 
+// Icono del circulo azul de "mi ubicacion".
+const ICON_YO = L.divIcon({
+  className: "",
+  html: `<div class="mi-ubicacion-pin"></div>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
 const DEFAULT_CENTER: [number, number] = [-36.8269, -73.0498];
 
 function Recenter({ lat, lng }: { lat: number; lng: number }) {
@@ -25,6 +33,30 @@ function Recenter({ lat, lng }: { lat: number; lng: number }) {
     map.setView([lat, lng], map.getZoom(), { animate: true });
   }, [lat, lng, map]);
   return null;
+}
+
+// Boton que pide el GPS y centra el mapa en el usuario.
+function BotonEncontrarme({ onUbicar }: { onUbicar: (lat: number, lng: number) => void }) {
+  const map = useMap();
+
+  function encontrarme() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        onUbicar(latitude, longitude);
+        map.setView([latitude, longitude], 15, { animate: true });
+      },
+      () => alert("No se pudo obtener tu ubicacion."),
+      { enableHighAccuracy: true }
+    );
+  }
+
+  return (
+    <button className="btn-encontrarme" onClick={encontrarme}>
+      Encontrarme
+    </button>
+  );
 }
 
 interface MapViewProps {
@@ -42,6 +74,7 @@ export default function MapView({
   onSelect,
   onDragPin,
 }: MapViewProps) {
+  const [miUbicacion, setMiUbicacion] = useState<[number, number] | null>(null);
   const selected = incidents.find((i) => i.id === selectedId) || null;
   const center: [number, number] = selected
     ? [selected.latitude, selected.longitude]
@@ -103,9 +136,19 @@ export default function MapView({
         );
       })}
 
-      {selected && draftCoords && selected.status === "PENDING" && (
-        <Recenter lat={draftCoords.lat} lng={draftCoords.lng} />
+      {selected && (
+        <Recenter
+          lat={selected.status === "PENDING" && draftCoords ? draftCoords.lat : selected.latitude}
+          lng={selected.status === "PENDING" && draftCoords ? draftCoords.lng : selected.longitude}
+        />
       )}
+      {miUbicacion && (
+        <Marker position={miUbicacion} icon={ICON_YO}>
+          <Popup>Estas aqui</Popup>
+        </Marker>
+      )}
+
+      <BotonEncontrarme onUbicar={(lat, lng) => setMiUbicacion([lat, lng])} />
     </MapContainer>
   );
 }

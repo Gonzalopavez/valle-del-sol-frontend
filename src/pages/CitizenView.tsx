@@ -22,8 +22,9 @@ export default function CitizenView() {
   const [locating, setLocating] = useState(false);
   const [sending, setSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // modal central de exito
-  const [tab, setTab] = useState<"reportar" | "mapa">("reportar");
+  const [tab, setTab] = useState<"reportar" | "mapa" | "mis">("reportar");
   const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [misReportes, setMisReportes] = useState<Incident[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -31,6 +32,22 @@ export default function CitizenView() {
     capturarUbicacion(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Al entrar a "Mis reportes", refrescamos el estado real de cada uno desde el backend.
+  useEffect(() => {
+    if (tab !== "mis" || misReportes.length === 0) return;
+    getAllIncidents()
+      .then((todos) => {
+        setMisReportes((prev) =>
+          prev.map((mio) => {
+            const fresco = todos.find((t) => t.id === mio.id);
+            return fresco ? fresco : mio;
+          })
+        );
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
 
   // Cuando el vecino entra a la pestana mapa, cargamos los incidentes y refrescamos cada 8s.
   useEffect(() => {
@@ -99,13 +116,14 @@ export default function CitizenView() {
 
     setSending(true);
     try {
-      await createIncident({
+      const creado = await createIncident({
         userId: VECINO_ID,
         description: description.trim(),
         latitude: coords.latitude,
         longitude: coords.longitude,
         imageUrl: imageData || "https://valle-del-sol.cl/sin-foto.jpg",
       });
+      setMisReportes((prev) => [creado, ...prev]);
       setShowSuccess(true); // mostramos el modal central
       setDescription("");
       quitarImagen();
@@ -154,6 +172,7 @@ export default function CitizenView() {
         <div className="citizen-tabs">
           <button className={`citizen-tab ${tab === "reportar" ? "activo" : ""}`} onClick={() => setTab("reportar")}>Reportar</button>
           <button className={`citizen-tab ${tab === "mapa" ? "activo" : ""}`} onClick={() => setTab("mapa")}>Ver mapa</button>
+          <button className={`citizen-tab ${tab === "mis" ? "activo" : ""}`} onClick={() => setTab("mis")}>Mis reportes</button>
         </div>
 
         {tab === "reportar" && (
@@ -245,6 +264,23 @@ export default function CitizenView() {
             <CitizenMap incidents={incidents} />
           </div>
         )}
+        {tab === "mis" && (
+          <div className="citizen-body">
+            {misReportes.length === 0 ? (
+              <p className="mis-vacio">Todavia no has enviado reportes en esta sesion.</p>
+            ) : (
+              misReportes.map((r, i) => (
+                <div key={i} className="mis-item">
+                  <p className="mis-desc">{r.description}</p>
+                  <p className="mis-meta">{r.latitude.toFixed(4)}, {r.longitude.toFixed(4)}</p>
+                  <span className="mis-estado">{r.status || "PENDING"}</span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+          
+        
       </div>
     </div>
   );

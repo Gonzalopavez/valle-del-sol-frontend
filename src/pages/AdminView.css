@@ -184,9 +184,12 @@
   font-weight: 600;
 }
 
-.detail-desc {
+.detail-desc,.row-desc {
   margin: 0 0 5px;
   font-size: 14px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
 }
 
 .detail-meta {

@@ -332,3 +332,49 @@
 .citizen-map-box .leaflet-container {
   border-radius: 0;
 }
+
+
+
+
+/* ===== Mis reportes (sesion actual) ===== */
+.mis-vacio {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  padding: 30px 10px;
+}
+
+.mis-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 11px 13px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.mis-desc {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+  word-break: break-word;
+  padding-right: 70px;
+}
+
+.mis-meta {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.mis-estado {
+  position: absolute;
+  top: 11px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}

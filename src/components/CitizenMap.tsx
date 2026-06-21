@@ -1,5 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
+import { useState } from "react";
 import type { Incident } from "../types";
 
 // Mapa de SOLO LECTURA para el vecino. No permite arrastrar ni validar.
@@ -17,13 +18,47 @@ function makeIcon(color: string) {
 const ICON_VALIDATED = makeIcon("#e24b4a");
 const ICON_MITIGATED = makeIcon("#639922");
 
+// Icono del circulo azul de "mi ubicacion".
+const ICON_YO = L.divIcon({
+  className: "",
+  html: `<div class="mi-ubicacion-pin"></div>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
 const DEFAULT_CENTER: [number, number] = [-36.8269, -73.0498];
 
 interface CitizenMapProps {
   incidents: Incident[];
 }
 
+// Boton que pide el GPS y centra el mapa en el usuario.
+function BotonEncontrarme({ onUbicar }: { onUbicar: (lat: number, lng: number) => void }) {
+  const map = useMap();
+
+  function encontrarme() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        onUbicar(latitude, longitude);
+        map.setView([latitude, longitude], 15, { animate: true });
+      },
+      () => alert("No se pudo obtener tu ubicacion."),
+      { enableHighAccuracy: true }
+    );
+  }
+
+  return (
+    <button className="btn-encontrarme" onClick={encontrarme}>
+      Encontrarme
+    </button>
+  );
+}
+
 export default function CitizenMap({ incidents }: CitizenMapProps) {
+  const [miUbicacion, setMiUbicacion] = useState<[number, number] | null>(null);
+
   // El vecino solo ve incendios validados y mitigados.
   const visibles = incidents.filter(
     (i) => i.status === "VALIDATED" || i.status === "MITIGATED"
@@ -53,6 +88,14 @@ export default function CitizenMap({ incidents }: CitizenMapProps) {
           </Marker>
         );
       })}
+
+      {miUbicacion && (
+        <Marker position={miUbicacion} icon={ICON_YO}>
+          <Popup>Estas aqui</Popup>
+        </Marker>
+      )}
+
+      <BotonEncontrarme onUbicar={(lat, lng) => setMiUbicacion([lat, lng])} />
     </MapContainer>
   );
 }
