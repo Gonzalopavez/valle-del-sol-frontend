@@ -41,6 +41,11 @@ export default function AdminView() {
 
   function seleccionar(inc: Incident) {
     if (!inc.id) return;
+    // Si el reporte ya estaba seleccionado, hacer click de nuevo lo deselecciona (toggle)
+    if (inc.id === selectedId) {
+      limpiarSeleccion();
+      return;
+    }
     setSelectedId(inc.id);
     setDraftCoords({ lat: inc.latitude, lng: inc.longitude });
   }
@@ -155,6 +160,7 @@ export default function AdminView() {
               draftCoords={draftCoords}
               onSelect={seleccionar}
               onDragPin={(lat, lng) => setDraftCoords({ lat, lng })}
+              onDeselect={limpiarSeleccion}
             />
             <div className="map-legend">
               <span><i className="dot" style={{ background: "#e24b4a" }} /> Validado</span>

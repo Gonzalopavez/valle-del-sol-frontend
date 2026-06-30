@@ -35,6 +35,18 @@ function Recenter({ lat, lng }: { lat: number; lng: number }) {
   return null;
 }
 
+// Escucha clicks en el fondo del mapa (fuera de cualquier marker) para deseleccionar.
+function ClickFondo({ onClickFondo }: { onClickFondo: () => void }) {
+  const map = useMap();
+  useEffect(() => {
+    map.on("click", onClickFondo);
+    return () => {
+      map.off("click", onClickFondo);
+    };
+  }, [map, onClickFondo]);
+  return null;
+}
+
 // Boton que pide el GPS y centra el mapa en el usuario.
 function BotonEncontrarme({ onUbicar }: { onUbicar: (lat: number, lng: number) => void }) {
   const map = useMap();
@@ -65,6 +77,7 @@ interface MapViewProps {
   draftCoords: { lat: number; lng: number } | null;
   onSelect: (incident: Incident) => void;
   onDragPin: (lat: number, lng: number) => void;
+  onDeselect: () => void; // Nueva prop: se llama al hacer click en el fondo del mapa
 }
 
 export default function MapView({
@@ -73,6 +86,7 @@ export default function MapView({
   draftCoords,
   onSelect,
   onDragPin,
+  onDeselect, // Nueva prop desestructurada
 }: MapViewProps) {
   const [miUbicacion, setMiUbicacion] = useState<[number, number] | null>(null);
   const selected = incidents.find((i) => i.id === selectedId) || null;
@@ -91,6 +105,9 @@ export default function MapView({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+      {/* Deselecciona el reporte activo al hacer click en el fondo del mapa */}
+      <ClickFondo onClickFondo={onDeselect} />
 
       {incidents.map((inc) => {
         if (!inc.id) return null;
